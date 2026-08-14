@@ -2,7 +2,7 @@
 PY := .venv/bin/python
 
 setup:
-	python3.12 -m venv .venv && .venv/bin/pip install -U pip numpy pytest
+	python3.12 -m venv .venv && .venv/bin/pip install -U pip -r requirements.txt pytest
 
 test:
 	$(PY) -m pytest tests/ -q

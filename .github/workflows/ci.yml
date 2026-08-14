@@ -12,7 +12,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install numpy pytest
+      - run: pip install -r requirements.txt pytest
       - run: python -m pytest tests/ -q
       # Guards the headline number: if the solver silently regresses, the
       # README's 39 stops being true and CI should say so.
