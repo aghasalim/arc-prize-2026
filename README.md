@@ -1,4 +1,4 @@
-# ARC-AGI-2 — a program-synthesis attempt that scores 0% on the eval set
+# ARC-AGI-2 — a program-synthesis attempt that scores 0.00 on the leaderboard
 
 [![ci](https://github.com/aghasalim/arc-prize-2026/actions/workflows/ci.yml/badge.svg)](https://github.com/aghasalim/arc-prize-2026/actions/workflows/ci.yml)
 [![python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
@@ -127,17 +127,34 @@ every number above.
 
 ---
 
-## Kaggle submission status
+## Kaggle submission — scored 0.00, as predicted
 
-**Not yet submitted.** ARC-AGI-2 is a code competition — submission is a notebook
-executed in Kaggle's offline sandbox — and it requires accepting the competition
-rules on the account first, which is the account owner's action, not something
-tooling should do. `arc/submit.py` writes a `submission.json` in the required
-format and the solver has no network or GPU dependencies, so it runs as-is in
-the sandbox once the rules are accepted.
+**Submitted and scored: `0.00` on the ARC Prize 2026 / ARC-AGI-2 leaderboard**
+(submission 55509993, notebook
+[ARC-AGI-2 DSL search v2](https://www.kaggle.com/code/aghasalimmustafazada/arc-agi-2-dsl-search)).
 
-Given the eval result, I would expect a submitted score at or very near 0%. I'd
-rather state that prediction here in advance than quietly not submit.
+The prediction was written into this README *before* submitting — "I would expect
+a submitted score at or very near 0%" — and the hidden test set returned exactly
+that. Small thing, but it is the one calibration check available here: the public
+evaluation set was a faithful guide to the private one, so the 0/120 was not an
+artefact of that particular 120 tasks.
+
+Mechanics worth recording, since a code competition is not a CSV upload:
+
+- Kaggle re-runs the notebook privately with a hidden test set substituted into
+  the competition dataset, then scores the `submission.json` it produces. There
+  is no API endpoint for submitting a notebook — `kaggle competitions submit -f`
+  returns `400` on this competition.
+- Version 1 of the kernel died with `FileNotFoundError` because it hardcoded
+  `/kaggle/input/arc-prize-2026-arc-agi-2/`. The real mount is
+  `/kaggle/input/competitions/arc-prize-2026-arc-agi-2/`. Version 2 globs for the
+  challenges file instead of assuming a path, which is both shorter and correct.
+- The hidden set has **240 tasks**, twice the public evaluation set's 120.
+
+One honest weakness in what was submitted: `attempt_2` is identical to
+`attempt_1` on every task. When the search finds no candidate it falls back to
+echoing the input, and both attempts get that same fallback — so the two-attempt
+allowance contributed nothing at all here, rather than merely little.
 
 ---
 

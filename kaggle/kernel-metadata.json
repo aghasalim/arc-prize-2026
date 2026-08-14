@@ -1,0 +1,15 @@
+{
+  "id": "aghasalimmustafazada/arc-agi-2-dsl-search",
+  "title": "ARC-AGI-2 DSL search",
+  "code_file": "arc_submission.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_internet": false,
+  "competition_sources": [
+    "arc-prize-2026-arc-agi-2"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": []
+}
