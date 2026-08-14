@@ -1,0 +1,13 @@
+{
+  "split": "evaluation",
+  "n_tasks": 120,
+  "max_depth": 2,
+  "solved": 0,
+  "solved_pct": 0.0,
+  "attempt1_solved": 0,
+  "fit_demos_but_wrong": 0,
+  "no_candidate_found": 120,
+  "by_program": {},
+  "solved_ids": [],
+  "fitwrong_ids": []
+}

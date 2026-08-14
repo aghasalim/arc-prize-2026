@@ -1,0 +1,164 @@
+# ARC-AGI-2 — a program-synthesis attempt that scores 0% on the eval set
+
+[![ci](https://github.com/aghasalim/arc-prize-2026/actions/workflows/ci.yml/badge.svg)](https://github.com/aghasalim/arc-prize-2026/actions/workflows/ci.yml)
+[![python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+An attempt at [ARC Prize 2026 / ARC-AGI-2](https://www.kaggle.com/competitions/arc-prize-2026-arc-agi-2)
+by a third-year Applied Computer Science (AI) student. Object-centric DSL with a
+verifier-backed program search.
+
+**Results, up front:**
+
+| split | tasks | solved | |
+|---|---|---|---|
+| public training | 1,000 | **39** | 3.9% |
+| **public evaluation** | 120 | **0** | **0.0%** |
+
+Zero. Not a rounding-down of something — the search produced no correct answer
+on any of the 120 evaluation tasks, and on 120 of 120 it produced no candidate
+program at all, not even a wrong one.
+
+I'm leading with that because the number is the least interesting thing here and
+burying it would misrepresent what this is. The grand-prize bar is 85%. A solo
+DSL search was never going to approach it, and the useful output of the attempt
+is a characterisation of *why* the gap is shaped the way it is.
+
+---
+
+## What the two splits actually demand
+
+The 3.9%→0% collapse is the finding. It is not sampling noise on 120 tasks — my
+solver produced **zero candidate programs** on the eval set, meaning nothing in
+its vocabulary fit even the demonstration pairs, let alone the test.
+
+Measured differences between the splits:
+
+| | training | evaluation |
+|---|---|---|
+| mean input cells | 182 | **373** (2.05×) |
+| distinct colours per task | 5.39 | **7.06** |
+| demo pairs per task | 3.23 | **2.99** |
+
+Bigger grids, more colours, and *fewer* examples to infer the rule from. That
+combination is deliberate: ARC-AGI-2's evaluation set is curated so that tasks
+solvable by shallow transformation search are filtered out. My solver is exactly
+the thing it was built to exclude, and it behaved accordingly.
+
+**What solved the 39 training tasks**, which shows the ceiling clearly:
+
+| primitive family | tasks |
+|---|---|
+| tiling (fit:tile, incl. mirrored/composed) | 16 |
+| geometric only (rot/flip/transpose) | 7 |
+| colour map (fit:colormap) | 6 |
+| integer upscale (fit:scale) | 4 |
+| object selection | 4 |
+| crop to content | 2 |
+
+Every one is a *single global rule* applied to the whole grid. None involves
+counting, conditional logic, or a rule that varies per object — which is what
+the eval tasks are made of.
+
+---
+
+## Why program synthesis, and not the GNN I originally wanted
+
+I came in wanting the graph angle, and I split the idea in half rather than
+dropping it.
+
+**A GNN as the solver would score ~0**, and not for want of tuning. Each ARC task
+defines a *new* rule from 2–3 examples. There is no shared function across tasks
+to learn weights for; training on the 1,000 training tasks teaches you their
+rules, and the eval set deliberately uses different ones. The generalisation
+being tested is across *tasks*, not across samples within one — which is the one
+thing gradient descent over a fixed weight vector cannot do.
+
+**The object representation survives.** [`grid.py`](arc/grid.py) parses grids
+into connected components with colour, bounding box and translation-invariant
+normalised shape, and four of the solved tasks are pure object selection. What I
+dropped is the learned-weights part, not the structure.
+
+So: objects as the representation, search as the solver, and an exact verifier
+as the arbiter. If I extended this, the honest next step is an LLM proposing
+candidate programs with this search verifying them — the neural part generates,
+the symbolic part checks, and no gradient has to encode a rule it will never see
+twice.
+
+---
+
+## The verifier, and the number it hides
+
+A candidate is accepted only if it reproduces **every** demo pair exactly. That
+is the entire safeguard, and on 2–3 examples it is a weak one — a program can
+fit all the demos and still be the wrong rule.
+
+`evaluate.py` measures that directly, because the public sets ship test outputs:
+
+| | training |
+|---|---|
+| solved | 39 |
+| **fit every demo, wrong on test** | **3** |
+| no candidate found | 958 |
+
+So of 42 tasks where the search *believed* it had the rule, **3 (7%) were
+wrong**. Small, but non-zero, and it is the number a leaderboard can never give
+back: on Kaggle those three are indistinguishable from the 958 misses.
+
+Two attempts are allowed per task. They bought me **1 task** (38 of 39 solved on
+attempt 1), so the Occam-style shortest-program-first ranking is doing nearly all
+the work and the second attempt is close to free but nearly worthless here.
+
+---
+
+## Running it
+
+```bash
+make setup && make test
+```
+
+```bash
+make eval-train && make eval
+```
+
+Task data is the public [ARC-AGI-2 repo](https://github.com/arcprize/ARC-AGI-2)
+(Apache-2.0), vendored under `data/`. No Kaggle credentials needed to reproduce
+every number above.
+
+---
+
+## Kaggle submission status
+
+**Not yet submitted.** ARC-AGI-2 is a code competition — submission is a notebook
+executed in Kaggle's offline sandbox — and it requires accepting the competition
+rules on the account first, which is the account owner's action, not something
+tooling should do. `arc/submit.py` writes a `submission.json` in the required
+format and the solver has no network or GPU dependencies, so it runs as-is in
+the sandbox once the rules are accepted.
+
+Given the eval result, I would expect a submitted score at or very near 0%. I'd
+rather state that prediction here in advance than quietly not submit.
+
+---
+
+## What I'd do next, honestly
+
+Ordered by expected value, which is not the order of effort:
+
+1. **Stop extending the DSL by hand.** Doubling the search depth is the
+   cleanest version of "add more vocabulary", and it moved training from
+   **2.7% (depth 1, 27 tasks) to 3.9% (depth 2, 39 tasks)** while leaving eval
+   at **0% either way**. The eval tasks need compositional,
+   conditional and counting rules; reaching them by enumerating a hand-written
+   vocabulary is a losing race against a set curated to defeat it.
+2. **LLM-proposes / search-verifies.** The verifier here is the reusable part.
+   Published approaches in this range get their leverage from a model
+   *generating* candidate programs, not from a bigger primitive set.
+3. **Test-time adaptation.** The strongest open results fine-tune per task at
+   inference. That fits the benchmark's actual structure — a new rule per
+   task — in a way a fixed-weight model does not.
+
+## License
+
+MIT. Task data from [ARC-AGI-2](https://github.com/arcprize/ARC-AGI-2) under
+Apache-2.0.
