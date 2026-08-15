@@ -4,3 +4,5 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 submission.json
+.env
+.env.local
