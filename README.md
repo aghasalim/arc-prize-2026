@@ -26,7 +26,35 @@ is a characterisation of *why* the gap is shaped the way it is.
 
 ---
 
-## What the two splits actually demand
+
+---
+
+## Abstract
+
+ARC-AGI-2 asks for programs that generalise to tasks nobody has seen. This is an
+object-centric DSL with a verifier and depth-2 composition, and it is reported as a
+failed attempt with the number that makes it one.
+
+The DSL solves 39 of 1,000 training tasks (3.9%) and 0 of 120 evaluation tasks
+(0.0%). Zero, not a smaller number. The search finds no candidate at all for 95.8%
+of training tasks and 100% of evaluation tasks, so the failure is not a verifier
+that rejects good candidates — there are no candidates to reject.
+
+Twenty-one distinct programs account for the 39 training solves, and the shape of
+that distribution is the diagnosis: a few broad transforms like `fit:tile` and
+`fit:colormap` with a long tail of one-offs. Every one of them was written after
+looking at training tasks, which is exactly the generalisation the evaluation split
+exists to refuse.
+
+The Kaggle submission scored 0.00, as predicted here before submitting.
+
+**Contributions.** (i) A DSL and verifier reported against the held-out split
+rather than the split it was written on. (ii) The candidate-generation failure
+isolated from verifier failure. (iii) A predicted score, submitted and confirmed.
+
+---
+
+## 1. What the two splits actually demand
 
 The 3.9%→0% collapse is the finding. It is not sampling noise on 120 tasks — my
 solver produced **zero candidate programs** on the eval set, meaning nothing in
@@ -62,7 +90,13 @@ the eval tasks are made of.
 
 ---
 
-## Why program synthesis, and not the GNN I originally wanted
+![training against evaluation, and where the search ends up](reports/figures/generalisation.png)
+
+The right-hand panel matters more than the left. The search fails to produce any
+candidate at all for 100% of evaluation tasks, so this is a generation failure
+rather than a verification one — there is nothing for the verifier to reject.
+
+## 2. Why program synthesis, and not the GNN I originally wanted
 
 I came in wanting the graph angle, and I split the idea in half rather than
 dropping it.
@@ -87,7 +121,15 @@ twice.
 
 ---
 
-## The verifier, and the number it hides
+![which programs account for the training solves](reports/figures/program-frequency.png)
+
+![one task the search solved](reports/figures/solved-example.png)
+
+The second figure is what a solve actually looks like: a mirrored tiling. That is
+the scope of this DSL — grid transforms with a fitted tiling or colour map, not
+reasoning about objects and goals.
+
+## 3. The verifier, and the number it hides
 
 A candidate is accepted only if it reproduces **every** demo pair exactly. That
 is the entire safeguard, and on 2–3 examples it is a weak one — a program can
@@ -111,7 +153,7 @@ the work and the second attempt is close to free but nearly worthless here.
 
 ---
 
-## Running it
+## 4. Running it
 
 ```bash
 make setup && make test
@@ -127,7 +169,7 @@ every number above.
 
 ---
 
-## Kaggle submission — scored 0.00, as predicted
+## 5. Kaggle submission — scored 0.00, as predicted
 
 **Submitted and scored: `0.00` on the ARC Prize 2026 / ARC-AGI-2 leaderboard**
 (submission 55509993, notebook
@@ -158,7 +200,7 @@ allowance contributed nothing at all here, rather than merely little.
 
 ---
 
-## What I'd do next, honestly
+## 6. What I'd do next, honestly
 
 Ordered by expected value, which is not the order of effort:
 
@@ -175,7 +217,7 @@ Ordered by expected value, which is not the order of effort:
    inference. That fits the benchmark's actual structure — a new rule per
    task — in a way a fixed-weight model does not.
 
-## License
+## 7. Licence
 
 MIT. Task data from [ARC-AGI-2](https://github.com/arcprize/ARC-AGI-2) under
 Apache-2.0.
