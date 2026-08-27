@@ -135,3 +135,11 @@ Full detail in [notes/METHODS.md](notes/METHODS.md#6-what-id-do-next-honestly).
 
 MIT. Task data from [ARC-AGI-2](https://github.com/arcprize/ARC-AGI-2) under
 Apache-2.0.
+
+## References
+
+The papers and sources this implementation follows. Each one is here because
+the code uses the method, the dataset or the metric it describes.
+
+- **Chollet. On the Measure of Intelligence. 2019.** [arXiv:1911.01547](https://arxiv.org/abs/1911.01547) ARC and the skill acquisition efficiency argument behind it.
+- **Chollet, Knoop, Kamradt, Landers, Pinkard. ARC-AGI-2: A New Challenge for Frontier AI Reasoning Systems. 2025.** [arXiv:2505.11831](https://arxiv.org/abs/2505.11831) the benchmark this targets.
