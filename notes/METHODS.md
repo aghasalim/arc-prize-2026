@@ -29,9 +29,9 @@ twice.
 
 ---
 
-![which programs account for the training solves](reports/figures/program-frequency.png)
+![which programs account for the training solves](../reports/figures/program-frequency.png)
 
-![one task the search solved](reports/figures/solved-example.png)
+![one task the search solved](../reports/figures/solved-example.png)
 
 The second figure is what a solve actually looks like: a mirrored tiling. That is
 the scope of this DSL, grid transforms with a fitted tiling or colour map, not
