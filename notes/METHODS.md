@@ -16,7 +16,7 @@ rules, and the eval set deliberately uses different ones. The generalisation
 being tested is across *tasks*, not across samples within one, which is the one
 thing gradient descent over a fixed weight vector cannot do.
 
-**The object representation survives.** [`grid.py`](arc/grid.py) parses grids
+**The object representation survives.** [`grid.py`](../arc/grid.py) parses grids
 into connected components with colour, bounding box and translation-invariant
 normalised shape, and four of the solved tasks are pure object selection. What I
 dropped is the learned-weights part, not the structure.
