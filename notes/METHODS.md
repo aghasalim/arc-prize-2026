@@ -67,7 +67,7 @@ the work and the second attempt is close to free but nearly worthless here.
 ## 5. Kaggle submission, scored 0.00, as predicted
 
 
-**Submitted and scored:`0.00` on the ARC Prize 2026 / ARC-AGI-2 leaderboard**
+**Submitted and scored: `0.00` on the ARC Prize 2026 / ARC-AGI-2 leaderboard**
 (submission 55509993, notebook
 [ARC-AGI-2 DSL search v2](https://www.kaggle.com/code/aghasalimmustafazada/arc-agi-2-dsl-search)).
 
@@ -80,16 +80,16 @@ artefact of that particular 120 tasks.
 Mechanics worth recording, since a code competition is not a CSV upload:
 
 - Kaggle re-runs the notebook privately with a hidden test set substituted into
-  the competition dataset, then scores the`submission.json` it produces. There
-  is no API endpoint for submitting a notebook`kaggle competitions submit -f`
-  returns`400` on this competition.
-- Version 1 of the kernel died with`FileNotFoundError` because it hardcoded
+  the competition dataset, then scores the `submission.json` it produces. There
+  is no API endpoint for submitting a notebook `kaggle competitions submit -f`
+  returns `400` on this competition.
+- Version 1 of the kernel died with `FileNotFoundError` because it hardcoded
 `/kaggle/input/arc-prize-2026-arc-agi-2/`. The real mount is
 `/kaggle/input/competitions/arc-prize-2026-arc-agi-2/`. Version 2 globs for the
   challenges file instead of assuming a path, which is both shorter and correct.
 - The hidden set has **240 tasks**, twice the public evaluation set's 120.
 
-One honest weakness in what was submitted:`attempt_2` is identical to
+One honest weakness in what was submitted: `attempt_2` is identical to
 `attempt_1` on every task. When the search finds no candidate it falls back to
 echoing the input, and both attempts get that same fallback, so the two-attempt
 allowance contributed nothing at all here, rather than merely little.

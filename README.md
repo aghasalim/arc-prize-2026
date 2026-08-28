@@ -41,7 +41,7 @@ of training tasks and 100% of evaluation tasks, so the failure is not a verifier
 that rejects good candidates, there are no candidates to reject.
 
 Twenty-one distinct programs account for the 39 training solves, and the shape of
-that distribution is the diagnosis: a few broad transforms like`fit:tile` and
+that distribution is the diagnosis: a few broad transforms like `fit:tile` and
 `fit:colormap` with a long tail of one-offs. Every one of them was written after
 looking at training tasks, which is exactly the generalisation the evaluation split
 exists to refuse.
@@ -118,13 +118,13 @@ make eval-train && make eval
 ```
 
 Task data is the public [ARC-AGI-2 repo](https://github.com/arcprize/ARC-AGI-2)
-(Apache-2.0), vendored under`data/`. No Kaggle credentials needed to reproduce
+(Apache-2.0), vendored under `data/`. No Kaggle credentials needed to reproduce
 every number above.
 
 ---
 
 ## 5. Kaggle submission, scored 0.00, as predicted
-**Submitted and scored:`0.00` on the ARC Prize 2026 / ARC-AGI-2 leaderboard** (submission 55509993, notebook [ARC-AGI-2 DSL search v2](https://www.kaggle.com/code/aghasalimmustafazada/arc-agi-2-dsl-search)).
+**Submitted and scored: `0.00` on the ARC Prize 2026 / ARC-AGI-2 leaderboard** (submission 55509993, notebook [ARC-AGI-2 DSL search v2](https://www.kaggle.com/code/aghasalimmustafazada/arc-agi-2-dsl-search)).
 
 Full detail in [notes/METHODS.md](notes/METHODS.md#5-kaggle-submission-scored-000-as-predicted).
 ## 6. What I'd do next, honestly
