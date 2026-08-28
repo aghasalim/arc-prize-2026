@@ -1,1 +1,4 @@
 numpy>=1.26
+
+# scripts/make_figures.py only, the solver and the tests need numpy alone.
+matplotlib>=3.8
