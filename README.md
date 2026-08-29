@@ -99,12 +99,25 @@ rather than a verification one, there is nothing for the verifier to reject.
 ## 2. Why program synthesis, and not the GNN I originally wanted
 I came in wanting the graph angle, and I split the idea in half rather than dropping it.
 
+A GNN as the solver would score about 0, and no amount of tuning fixes that. Each
+ARC task defines a new rule from 2 or 3 examples, so there is no function shared
+across tasks for gradient descent to fit weights to. What survived is the object
+representation: `grid.py` parses every grid into connected components, and 4 of
+the 39 training solves are object selection. The learned weights are the part I
+dropped, not the structure.
+
 ![which programs account for the training solves](reports/figures/program-frequency.png)
 ![one task the search solved](reports/figures/solved-example.png)
 
 Full detail in [notes/METHODS.md](notes/METHODS.md#2-why-program-synthesis-and-not-the-gnn-i-originally-wanted).
 ## 3. The verifier, and the number it hides
-A candidate is accepted only if it reproduces **every** demo pair exactly.
+A candidate is accepted only if it reproduces **every** demo pair exactly. On 2
+or 3 demos that is a weak guarantee, and `evaluate.py` measures how weak: of the
+42 training tasks where the search believed it had the rule, 3 fit every demo and
+still got the test grid wrong. That is 7%, and it is the number a leaderboard can
+never give back, because on Kaggle those 3 are indistinguishable from the 958
+tasks that produced no candidate at all. The second allowed attempt bought 1
+task, since 38 of the 39 were already solved on attempt 1.
 
 Full detail in [notes/METHODS.md](notes/METHODS.md#3-the-verifier-and-the-number-it-hides).
 ## 4. Running it
@@ -126,9 +139,23 @@ every number above.
 ## 5. Kaggle submission, scored 0.00, as predicted
 **Submitted and scored: `0.00` on the ARC Prize 2026 / ARC-AGI-2 leaderboard** (submission 55509993, notebook [ARC-AGI-2 DSL search v2](https://www.kaggle.com/code/aghasalimmustafazada/arc-agi-2-dsl-search)).
 
+The prediction went into this README before I submitted, that I expected a score
+at or very near 0%, and the hidden test set returned it. That hidden set holds
+240 tasks, twice the 120 in the public evaluation split, so the 0 of 120 was not
+an artefact of which 120 tasks I happened to have. One weakness in what went up:
+`attempt_2` is identical to `attempt_1` on every task, because the no-candidate
+fallback echoes the input into both, so the two-attempt allowance contributed
+nothing at all.
+
 Full detail in [notes/METHODS.md](notes/METHODS.md#5-kaggle-submission-scored-000-as-predicted).
 ## 6. What I'd do next, honestly
-Ordered by expected value, which is not the order of effort: 1.
+Ordered by expected value, which is not the order of effort. First, stop
+extending the DSL by hand: doubling the search depth is the cleanest version of
+adding vocabulary, and it moved training from 2.7% (27 tasks at depth 1) to 3.9%
+(39 tasks at depth 2) while leaving evaluation at 0% either way. Second, have an
+LLM propose candidate programs and keep this search as the checker, because the
+verifier is the reusable half. Third, test-time adaptation, which fits a
+benchmark whose whole structure is a new rule per task.
 
 Full detail in [notes/METHODS.md](notes/METHODS.md#6-what-id-do-next-honestly).
 ## 7. Licence
