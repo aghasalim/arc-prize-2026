@@ -6,3 +6,6 @@ __pycache__/
 submission.json
 .env
 .env.local
+verify/permute/target/
+verify/gocheck/gocheck
+splitmeans

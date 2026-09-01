@@ -24,3 +24,55 @@ jobs:
           print(f"solved {r['solved']}/{r['n_tasks']}")
           assert r["solved"] >= 39, f"regression: {r['solved']} < 39"
           PY
+
+  # Every number in the README came out of one Python script. This job
+  # recomputes them in SQL, C, Go, R, Rust and Ruby and fails if any two
+  # disagree, then corrupts a file to prove the harness can still say no.
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: install R if the image does not ship it
+        run: command -v Rscript || sudo apt-get install -y --no-install-recommends r-base-core
+      - name: the committed task rows are what the script produces today
+        run: |
+          python scripts/split_stats.py
+          git diff --exit-code reports/task_stats.csv reports/split_stats.csv
+      - name: six implementations agree
+        run: ./verify/verify.sh
+      - name: the harness rejects a corrupted per-task row
+        run: |
+          cp reports/task_stats.csv /tmp/task_stats.csv
+          python - <<'PY'
+          p = "reports/task_stats.csv"
+          rows = open(p).read().splitlines()
+          f = rows[1].split(",")
+          f[3] = "999.5"
+          rows[1] = ",".join(f)
+          open(p, "w").write("\n".join(rows) + "\n")
+          print("corrupted:", rows[1])
+          PY
+          if ./verify/verify.sh > /tmp/corrupt.log 2>&1; then
+            echo "the harness accepted a corrupted row"; cat /tmp/corrupt.log; exit 1
+          fi
+          tail -3 /tmp/corrupt.log
+          cp /tmp/task_stats.csv reports/task_stats.csv
+      - name: the harness rejects a ragged grid
+        run: |
+          f=data/training/00576224.json
+          cp $f /tmp/task.json
+          python - <<'PY'
+          p = "data/training/00576224.json"
+          s = open(p).read()
+          open(p, "w").write(s.replace('"input": [[7, 9], [4, 3]]', '"input": [[7, 9], [4, 3, 3]]', 1))
+          PY
+          if ./verify/verify.sh > /tmp/ragged.log 2>&1; then
+            echo "the harness accepted a ragged grid"; cat /tmp/ragged.log; exit 1
+          fi
+          grep -m3 'row 1 has 3 cells' /tmp/ragged.log
+          cp /tmp/task.json $f
+      - name: and passes again once both are restored
+        run: ./verify/verify.sh

@@ -68,6 +68,11 @@ Measured differences between the splits:
 | distinct colours per task | 5.39 | **7.06** |
 | demo pairs per task | 3.23 | **2.99** |
 
+Those three rows come from [`scripts/split_stats.py`](scripts/split_stats.py),
+which writes one row per task to `reports/task_stats.csv` and the summary above
+to `reports/split_stats.csv`. Section 7 is about rebuilding both in other
+languages.
+
 Bigger grids, more colours, and *fewer* examples to infer the rule from. That
 combination is deliberate: ARC-AGI-2's evaluation set is curated so that tasks
 solvable by shallow transformation search are filtered out. My solver is exactly
@@ -158,7 +163,74 @@ verifier is the reusable half. Third, test-time adaptation, which fits a
 benchmark whose whole structure is a new rule per task.
 
 Full detail in [notes/METHODS.md](notes/METHODS.md#6-what-id-do-next-honestly).
-## 7. Licence
+## 7. Everything here is computed twice
+
+Every number above came out of one Python script, and every figure reads the file
+that script wrote. If the counting were wrong nothing downstream would notice,
+because everything downstream is downstream of the same mistake. The tests
+checked that the code runs, not that it is right.
+
+So the two summary tables are rebuilt from the level below them. The 1,120 task
+files are the raw level; `reports/task_stats.csv` is one row per task;
+`reports/split_stats.csv` and the scoreboard in `reports/eval_*.json` are the
+summaries the README quotes. Five other languages recompute those summaries, and
+a sixth checks that the README still says what the files say. CI fails if any two
+disagree, so a mistake would have to be made identically in six languages to
+survive.
+
+| implementation | what it recomputes | measured agreement |
+| --- | --- | --- |
+| [`verify/aggregate.sql`](verify/aggregate.sql) | the split summary from the 1,120 task rows by GROUP BY, and the six primitive families from `by_program` | within 1e-9; families 16, 7, 6, 4, 4, 2, summing to all 39 solves |
+| [`verify/splitmeans.c`](verify/splitmeans.c) | the same six means, columns resolved by name from the header | exact, worst 8.5e-14 |
+| [`verify/gocheck`](verify/gocheck) | every grid in all 1,120 task files, then every row of `task_stats.csv` from the JSON itself, then the scoreboard from its own id lists | 1,120 files clean; all 1,120 rows exact, 0.0e+00 |
+| [`verify/verify.R`](verify/verify.R) | the means again, plus intervals on the two claims that were only asserted | means to 5.7e-14 |
+| [`verify/permute`](verify/permute) | 200,000 permutations of the split labels, base Rust, own xorshift | means to 8.5e-14 |
+| [`verify/claims.rb`](verify/claims.rb) | 21 numbers in this README against the files they came from | all 21 match |
+
+Run them with [`./verify/verify.sh`](verify/verify.sh), which prints `6 passed, 0
+failed, 0 skipped` here and skips any implementation whose toolchain is missing.
+
+**R puts intervals on two claims I had only asserted.** The 2.05x input-cell
+ratio has a bootstrap 95% interval of [1.807, 2.315] over 4,000 resamples of
+tasks within each split, so it is comfortably above 1 even on 120 evaluation
+tasks. And if the evaluation split were as solvable as the training split
+(p = 0.039), the chance of solving 0 of 120 is 0.0084. The exact 95% upper bound
+on my evaluation solve rate is 3.03%. I called the collapse real in section 1
+without ever computing either of those.
+
+**Rust asks whether the split difference is just which 120 tasks I got.**
+Shuffling the 1,120 split labels 200,000 times and recomputing the difference in
+means each time: input cells differ by +190.99 with p below 5.0e-06 (0 shuffles
+out of 200,000 were that extreme), distinct colours by +1.67 with p below
+5.0e-06, and demo pairs by -0.24 with p = 0.00817. All three differences in the
+section 1 table survive. That is 224 million label moves, which is the reason
+that one is in Rust.
+
+**The harness is checked too.** CI corrupts a per-task row, requires rejection,
+restores it, corrupts a grid into a ragged one, requires rejection again, and
+then requires a clean pass. Each implementation catches what it is responsible
+for and nothing more, measured by corrupting one file at a time:
+
+| perturbation | caught by |
+| --- | --- |
+| one `input_cells` value in `task_stats.csv` | SQL, C, Go, R, Rust |
+| a published mean in `split_stats.csv` moved by 1e-6 | SQL, C, R, Rust |
+| a ragged row, or a colour 10, in a task file | Go |
+| a demo pair deleted from a task file | Go |
+| `solved` 39 to 40 in `eval_training.json` | SQL, Go, R, Ruby |
+| one program count in `by_program` 9 to 8 | SQL, Go, Ruby |
+| the family table in this README, 16 to 17 | Ruby |
+
+Ruby is silent on the first two because the README quotes those numbers rounded,
+which is the correct answer for it to give.
+
+What is *not* checked here: nothing re-runs the search. The 39, the 3 and the 958
+are the solver's own output, and the depth-1 figure in section 6 is a separate
+run that no longer has a file. Six implementations is what this repository can
+support honestly. There is no eighth language here doing token work, because a
+file that checks nothing would cast doubt on the ones that do.
+
+## 8. Licence
 
 MIT. Task data from [ARC-AGI-2](https://github.com/arcprize/ARC-AGI-2) under
 Apache-2.0.
