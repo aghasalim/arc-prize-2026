@@ -60,6 +60,8 @@ run "Go, every task file and every row"    go      check_go
 run "R, intervals on the two claims"       Rscript Rscript verify/verify.R "$root"
 run "Rust, 200k label permutations"        cargo   check_rust
 run "Ruby, the README against the files"   ruby    ruby verify/claims.rb "$root"
+run "Python, point estimates and solve rates" python3 python3 verify/check.py "$root"
+run "JS, the README against the files"    node    node verify/claims.mjs "$root"
 
 printf '\n%s\n' "----------------------------------------"
 printf '%d passed, %d failed, %d skipped\n' "$pass" "$fail" "$skip"
