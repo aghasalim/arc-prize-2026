@@ -57,8 +57,7 @@ the thing it was built to exclude, and it behaved accordingly.
 ![training against evaluation, and where the search ends up](reports/figures/generalisation.png)
 
 The right-hand panel matters more than the left. The search fails to produce any
-candidate at all for 100% of evaluation tasks, so this is a generation failure
-instead of a verification one, there is nothing for the verifier to reject.
+candidate at all for 100% of evaluation tasks, so this is a generation failure: there is nothing for the verifier to reject.
 
 ## Twenty-one programs, and the ceiling they draw
 
@@ -99,8 +98,7 @@ Full working: [notes/METHODS.md](notes/METHODS.md#3-the-verifier-and-the-number-
 
 ## The GNN I came in wanting, and the half of it that survived
 
-I came in wanting the graph angle, and I split the idea in half instead of
-dropping it.
+I came in wanting the graph angle, and I split the idea in half to keep it.
 
 A GNN as the solver would score about 0, and no amount of tuning fixes that. Each
 ARC task defines a new rule from 2 or 3 examples, so there is no function shared
