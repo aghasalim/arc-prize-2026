@@ -104,8 +104,7 @@ A GNN as the solver would score about 0, and no amount of tuning fixes that. Eac
 ARC task defines a new rule from 2 or 3 examples, so there is no function shared
 across tasks for gradient descent to fit weights to. What survived is the object
 representation: `grid.py` parses every grid into connected components, and 4 of
-the 39 training solves are object selection. The learned weights are the part I
-dropped, not the structure.
+the 39 training solves are object selection. I dropped the learned weights and kept the structure.
 
 Full working: [notes/METHODS.md](notes/METHODS.md#2-why-program-synthesis-and-not-the-gnn-i-originally-wanted).
 
