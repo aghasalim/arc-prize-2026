@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: If you use this work, please cite it as below.
+title: "ARC-AGI-2, a program-synthesis attempt that scores 0.00 on the leaderboard"
+abstract: "ARC-AGI-2 attempt: an object-centric DSL with verifier-backed program search. 3.9% on public training, 0% on public evaluation, and why."
+type: software
+authors:
+  - family-names: Mustafazada
+    given-names: Aghasalim
+    orcid: "https://orcid.org/0009-0001-8746-4582"
+    affiliation: "Howest University of Applied Sciences"
+repository-code: "https://github.com/aghasalim/arc-prize-2026"
+url: "https://aghasalim.github.io/"
+license: MIT
+keywords:
+  - arc agi
+  - dsl
+  - machine learning
+  - program search
+  - program synthesis
+  - reasoning
