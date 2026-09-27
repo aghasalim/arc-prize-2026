@@ -58,7 +58,7 @@ the thing it was built to exclude, and it behaved accordingly.
 
 The right-hand panel matters more than the left. The search fails to produce any
 candidate at all for 100% of evaluation tasks, so this is a generation failure
-rather than a verification one, there is nothing for the verifier to reject.
+instead of a verification one, there is nothing for the verifier to reject.
 
 ## Twenty-one programs, and the ceiling they draw
 
@@ -99,7 +99,7 @@ Full working: [notes/METHODS.md](notes/METHODS.md#3-the-verifier-and-the-number-
 
 ## The GNN I came in wanting, and the half of it that survived
 
-I came in wanting the graph angle, and I split the idea in half rather than
+I came in wanting the graph angle, and I split the idea in half instead of
 dropping it.
 
 A GNN as the solver would score about 0, and no amount of tuning fixes that. Each
