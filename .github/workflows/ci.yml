@@ -14,6 +14,8 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt pytest
       - run: python -m pytest tests/ -q
+      - name: every number in the paper is backed by a checked source
+        run: python verify/paper_numbers.py
       # Guards the headline number: if the solver silently regresses, the
       # README's 39 stops being true and CI should say so.
       - name: solver still solves 39 training tasks

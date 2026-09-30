@@ -9,6 +9,10 @@ An attempt at [ARC Prize 2026 / ARC-AGI-2](https://www.kaggle.com/competitions/a
 an object-centric DSL with a verifier-backed program search, reported as a failed
 attempt with the number that makes it one.
 
+The write-up for the ARC Prize paper track is on Kaggle as
+[Nothing to Verify](https://www.kaggle.com/competitions/arc-prize-2026-paper-track/writeups/nothing-to-verify-why-a-verified-dsl-search-score),
+with the source in [paper/PAPER.md](paper/PAPER.md).
+
 **Results, up front:**
 
 | split | tasks | solved | |
