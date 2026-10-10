@@ -79,14 +79,6 @@ class Obj:
         r0, c0, _, _ = self.bbox
         return frozenset((r - r0, c - c0) for r, c in self.cells)
 
-    def to_mask(self) -> Grid:
-        h, w = self.shape
-        m = np.zeros((h, w), dtype=np.int8)
-        r0, c0, _, _ = self.bbox
-        for r, c in self.cells:
-            m[r - r0, c - c0] = self.color
-        return m
-
 
 def objects(g: Grid, diagonal: bool = False, same_color: bool = True) -> list[Obj]:
     """Connected components.
