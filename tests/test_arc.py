@@ -99,3 +99,19 @@ def test_tasks_without_test_outputs_are_not_counted(monkeypatch):
     monkeypatch.setattr(evaluate, "load", lambda split: [("a", task), ("b", task)])
     res = evaluate.run("x")
     assert res["n_tasks"] == 0 and res["solved_pct"] == 0
+
+
+def test_kaggle_submission_is_a_copy_of_the_package():
+    # kaggle/arc_submission.py pastes arc/grid.py, dsl.py and solver.py into one
+    # file, with the __future__ and relative imports blanked out. Any other
+    # difference means one copy was edited without the other.
+    import re
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "kaggle" / "arc_submission.py").read_text()
+    parts = re.split(r"^# ===== (.+?) =====\n", text, flags=re.M)
+    sections = dict(zip(parts[1::2], parts[2::2]))
+    for name in ("arc/grid.py", "arc/dsl.py", "arc/solver.py"):
+        src = (root / name).read_text()
+        src = re.sub(r"^[ \t]*from (__future__|\.\w*) import .*$", "", src, flags=re.M)
+        assert sections[name].rstrip("\n") == src.rstrip("\n"), name
