@@ -1,0 +1,9 @@
+submission,date,notebook,script_version,public_score,kind,description
+55509993,2026-08-14,aghasalimmustafazada/arc-agi-2-dsl-search,342401077,0.00,own,Object-centric DSL with a verifier-backed program search. Scores 39/1000 on public training and 0/120 on public evaluation; submitting to get a real leaderboard number rather than an assumed one. Code: github.com/aghasalim/arc-prize-2026
+56782011,2026-10-02,aghasalimmustafazada/arc-agi-2-nvarc-qwen3-fork,354736222,31.39,fork,Fork of mikelou1/arc-agi2-lb33-89-minimal-perfpatch (NVARC 2025 + sorokin Qwen3 4B grid model). Not my method; my own DSL search is github.com/aghasalim/arc-prize-2026
+56797943,2026-10-03,aghasalimmustafazada/arc-agi-2-ensemble,354850496,30.14,fork_variant,"Ensemble of public ARC-AGI-2 notebooks (mikelou1 NVARC Qwen3 perfpatch with sorokin model, plus icecuber DSL search by Johan S. Wind), not my own method"
+56808835,2026-10-04,aghasalimmustafazada/arc-agi-2-full-coverage,355012961,29.03,fork_variant,"Public NVARC/Qwen3 solver with a full-coverage time scheduler plus icecuber, not my own method"
+56846913,2026-10-05,aghasalimmustafazada/arc-agi-2-nvarc-qwen3-fork,354736222,29.31,fork,Identical rerun of the 31.39 fork to measure run-to-run noise. Not my own method; fork of mikelou1/arc-agi2-lb33-89-minimal-perfpatch
+56877859,2026-10-06,aghasalimmustafazada/arc-agi-2-nvarc-qwen3-fork,354736222,27.22,fork,"Second identical rerun of the 31.39 fork, noise measurement. Not my own method"
+56911754,2026-10-07,aghasalimmustafazada/arc-agi-2-nvarc-qwen3-fork,354736222,28.06,fork,Identical rerun of the 31.39 fork. Not my own method
+56925760,2026-10-08,aghasalimmustafazada/arc-agi-2-nvarc-qwen3-fork,354736222,30.56,fork,Identical rerun of the 31.39 fork. Not my own method

@@ -1,0 +1,21 @@
+{
+ "n_identical": 5,
+ "script_version": "354736222",
+ "scores": [
+  31.39,
+  29.31,
+  27.22,
+  28.06,
+  30.56
+ ],
+ "mean": 29.31,
+ "sd": 1.72,
+ "min": 27.22,
+ "max": 31.39,
+ "range": 4.17,
+ "variant_scores": [
+  30.14,
+  29.03
+ ],
+ "variants_inside_range": true
+}
