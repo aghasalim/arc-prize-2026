@@ -91,3 +91,11 @@ def test_candidates_finds_a_real_rule():
     pairs = [(to_grid([[1, 0], [0, 0]]), to_grid([[0, 1], [0, 0]])),
              (to_grid([[2, 0], [0, 0]]), to_grid([[0, 2], [0, 0]]))]
     assert "flip_h" in {p.name for p in candidates(pairs, max_depth=1)}
+
+
+def test_tasks_without_test_outputs_are_not_counted(monkeypatch):
+    from arc import evaluate
+    task = {"train": [{"input": [[1]], "output": [[1]]}], "test": [{"input": [[1]]}]}
+    monkeypatch.setattr(evaluate, "load", lambda split: [("a", task), ("b", task)])
+    res = evaluate.run("x")
+    assert res["n_tasks"] == 0 and res["solved_pct"] == 0
