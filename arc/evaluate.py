@@ -61,10 +61,10 @@ def run(split: str = "evaluation", limit: int | None = None, max_depth: int = 2)
         else:
             no_candidate += 1
 
-    n = len(tasks)
+    n = solved + fit_wrong + no_candidate  # tasks skipped above for a missing output are not scored
     return {
         "split": split, "n_tasks": n, "max_depth": max_depth,
-        "solved": solved, "solved_pct": round(100 * solved / n, 2),
+        "solved": solved, "solved_pct": round(100 * solved / n, 2) if n else 0.0,
         "attempt1_solved": attempt1,
         "fit_demos_but_wrong": fit_wrong,
         "no_candidate_found": no_candidate,
