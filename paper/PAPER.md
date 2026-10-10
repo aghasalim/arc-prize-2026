@@ -6,7 +6,7 @@ Aghasalim Mustafazada, Howest University of Applied Sciences, Kortrijk
 
 ## Abstract
 
-I submitted an object-centric DSL with a verifier-backed program search to ARC-AGI-2 (submission 55509993). It scored 0.00 on the leaderboard, which I had predicted in writing before submitting. On the public splits it solves 39 of 1,000 training tasks and 0 of 120 evaluation tasks. This writeup explains why, with measurements instead of guesses. The failure is in generation, not verification: the search produced no candidate program for 958 of 1,000 training tasks and for all 120 evaluation tasks, so the verifier never had anything to reject. The evaluation split differs from training in the ways that defeat enumeration: grids are twice as large (373 against 182 cells), use more colours (7.06 against 5.39), and come with fewer demonstrations (2.99 against 3.23 pairs). The verifier, by contrast, is the reusable part, and its one weakness is measurable: of 42 training tasks where the search found a program that fit every demonstration, 3 were wrong on the test grid.
+I submitted an object-centric DSL with a verifier-backed program search to ARC-AGI-2 (submission 55509993). It scored 0.00 on the leaderboard, which I had predicted in writing before submitting. On the public splits it solves 39 of 1,000 training tasks and 0 of 120 evaluation tasks. This writeup explains why, with measurements instead of guesses. The failure is in generation, not verification: the search produced no candidate program for 958 of 1,000 training tasks and for all 120 evaluation tasks, so the verifier never had anything to reject. The evaluation split differs from training in the ways that defeat enumeration: grids are twice as large (373 against 182 cells), use more colours (7.06 against 5.39), and come with fewer demonstrations (2.99 against 3.23 pairs). The verifier, by contrast, is the reusable part, and its one weakness is measurable: of 42 training tasks where the search found a program that fit every demonstration, 3 were wrong on the test grid. The 31.39 shown for my team on the leaderboard is a public NVARC fork, not this method. Five identical reruns of it scored between 27.22 and 31.39, which measures the leaderboard's own noise: a standard deviation of 1.72 points.
 
 ## 1. What was submitted
 
@@ -79,9 +79,17 @@ On two or three demonstrations, "fits every pair" is a weak guarantee. The publi
 
 Of the 42 tasks where the search believed it had the rule, 3 were wrong, which is 7%. A leaderboard can never report this: on Kaggle those 3 look the same as the 958 tasks with no candidate. For anyone building a verifier-based system, this is the number to track, because it bounds how much a stronger generator can gain before the verifier becomes the limit.
 
-The second attempt added 1 task (38 of 39 were solved on attempt 1), so shortest-program-first ranking did almost all of the work. In the submitted version, attempt 2 was identical to attempt 1 on every task, because the fallback for "no candidate" echoes the input into both. The allowance contributed nothing at all.
+The second attempt added 1 training task (38 of 39 were solved on attempt 1), so shortest-program-first ranking did almost all of the work. For a task with no candidate, the submitted version writes the input grid into both attempts, so on those tasks the second attempt is a copy of the first and adds nothing.
 
-## 5. What generalises beyond this entry
+## 5. The score next to my name, and what it says about the leaderboard
+
+The leaderboard shows 31.39 for my team, not 0.00. That score is not my method. It comes from a fork of a public notebook (mikelou1's NVARC perfpatch: the NVARC 2025 solution, a Qwen3 4B model fine-tuned on synthetic ARC tasks with test-time training on each task), which I submitted to have a working baseline. I did not write it and claim nothing for it.
+
+I then used it as an instrument. Five submissions ran the same notebook version (script version 354736222) with nothing changed. They scored 31.39, 29.31, 27.22, 28.06 and 30.56: a mean of 29.31, a standard deviation of 1.72 and a range of 4.17 points. Two variants I tried on top of the fork, an ensemble and a time scheduler, scored 30.14 and 29.03. Both sit inside that range, so neither can be told apart from a rerun.
+
+For anyone tuning against this leaderboard, this is the useful number. With one submission a day, two single scores need to differ by about twice the standard deviation of a difference, near 5 points, before the gap means anything. The best of several reruns also overstates a method: my 31.39 is the luckiest of five draws of something whose mean is 29.31, about 2 points lower. `reports/leaderboard.csv` lists every submission with the notebook version it ran, and `scripts/leaderboard_noise.py` computes these figures from it.
+
+## 6. What generalises beyond this entry
 
 The negative result is specific. The parts below are not.
 
@@ -93,13 +101,13 @@ Predicting the leaderboard score before submitting is a cheap calibration test. 
 
 Test-time adaptation fits the benchmark's structure, a new rule per task, in a way a fixed vocabulary does not. I did not test it, and I list it as the next experiment, not a finding.
 
-## 6. Limitations
+## 7. Limitations
 
-This is a single solo entry, and the analysis is of one solver. The split statistics are computed on the public splits; the hidden set's statistics are not observable. The 7% false-positive rate rests on 42 tasks, so it is a rough estimate. The primitive vocabulary was written after looking at training tasks, which is itself the kind of fitting the evaluation split is designed to punish.
+This is a single solo entry, and the analysis is of one solver. The split statistics are computed on the public splits; the hidden set's statistics are not observable. The 7% false-positive rate rests on 42 tasks, so it is a rough estimate. The primitive vocabulary was written after looking at training tasks, which is itself the kind of fitting the evaluation split is designed to punish. The noise estimate rests on five reruns of one notebook, so the standard deviation itself is uncertain, and other methods may be noisier or quieter on the same leaderboard.
 
-## 7. Reproducing this
+## 8. Reproducing this
 
-Every number here is produced by `make eval-train`, `make eval` and `scripts/split_stats.py` in the repository, from the public ARC-AGI-2 task files (Apache 2.0). Independent reimplementations under `verify/` recompute the same figures, and CI fails if any of them disagrees. The code is MIT licensed.
+Every number here is produced by `make eval-train`, `make eval`, `scripts/split_stats.py` and `scripts/leaderboard_noise.py` in the repository, from the public ARC-AGI-2 task files (Apache 2.0). CI reruns both splits, fails if the results differ from the committed reports, and then checks every figure the paper quotes against those reports. Independent reimplementations under `verify/` recompute the split statistics as well. The code is MIT licensed.
 
 Code: https://github.com/aghasalim/arc-prize-2026 (DOI 10.5281/zenodo.23003614)
 
