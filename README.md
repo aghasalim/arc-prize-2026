@@ -1,5 +1,3 @@
-<p align="center"><img src="assets/banner.jpg" alt="Line drawing of pairs of small grid puzzles, each input grid joined by an arrow to its output grid" width="100%"></p>
-
 # ARC-AGI-2, a program-synthesis attempt that scores 0.00 on the leaderboard
 
 [![ci](https://github.com/aghasalim/arc-prize-2026/actions/workflows/ci.yml/badge.svg)](https://github.com/aghasalim/arc-prize-2026/actions/workflows/ci.yml)
