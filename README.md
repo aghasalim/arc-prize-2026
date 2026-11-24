@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/banner.jpg" alt="Line drawing of pairs of small grid puzzles, each input grid joined by an arrow to its output grid" width="100%"></p>
+
 # ARC-AGI-2, a program-synthesis attempt that scores 0.00 on the leaderboard
 
 [![ci](https://github.com/aghasalim/arc-prize-2026/actions/workflows/ci.yml/badge.svg)](https://github.com/aghasalim/arc-prize-2026/actions/workflows/ci.yml)
@@ -34,6 +36,20 @@ The rest of this page goes through that, more or less in the order I figured it
 out.
 
 ---
+
+<details>
+<summary>Contents</summary>
+
+- [The 3.9% → 0% collapse is not sampling noise](#the-39--0-collapse-is-not-sampling-noise)
+- [Twenty-one programs, and the ceiling they draw](#twenty-one-programs-and-the-ceiling-they-draw)
+- [The verifier is weaker than it looks, and Kaggle hides that](#the-verifier-is-weaker-than-it-looks-and-kaggle-hides-that)
+- [The GNN I came in wanting, and the half of it that survived](#the-gnn-i-came-in-wanting-and-the-half-of-it-that-survived)
+- [The submission, predicted before it was scored](#the-submission-predicted-before-it-was-scored)
+- [Running the whole thing yourself](#running-the-whole-thing-yourself)
+- [Three next moves, by expected value rather than effort](#three-next-moves-by-expected-value-rather-than-effort)
+- [Reading behind this](#reading-behind-this)
+
+</details>
 
 ## The 3.9% → 0% collapse is not sampling noise
 
